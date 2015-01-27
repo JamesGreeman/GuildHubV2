@@ -5,6 +5,8 @@
  */
 package com.zanvork.guildhub.servlets;
 
+import com.zanvork.guildhub.controller.GuildRequest;
+import com.zanvork.utils.RequestMap;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -32,7 +34,8 @@ public class GuildAPI extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json; charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            String json =   "{\"hello\":\"world\", \"value\":2}";
+            RequestMap  requestMap  =   new RequestMap(request);
+            String      json        =   new GuildRequest(requestMap).processRequest();
             out.println(json);
         }
     }

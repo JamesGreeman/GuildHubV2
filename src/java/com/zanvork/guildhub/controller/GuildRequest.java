@@ -3,19 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.zanvork.guildhub.controllers;
+package com.zanvork.guildhub.controller;
+import com.zanvork.guildhub.model.Guild;
 import com.zanvork.utils.RequestMap;
+import java.util.List;
 /**
  *
  * @author Jamie
  */
-public class Request {
-    RequestMap request;
-    public Request(RequestMap request){
-        this.request    =   request;
-    }
+public class GuildRequest extends Request{
     
+    public GuildRequest(RequestMap request){
+        super(request);
+    }
+    @Override
     public String processRequest(){
+        List<Guild> guilds;
+        guilds = Guild.getGuild(1);
         return "";
     }
 }

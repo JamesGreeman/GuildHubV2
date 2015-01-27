@@ -3,16 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.zanvork.guildhub.controllers;
+package com.zanvork.guildhub.controller;
 import com.zanvork.utils.RequestMap;
 /**
  *
  * @author Jamie
  */
-public class GuildRequest extends Request{
-    
-    public GuildRequest(RequestMap request){
-        super(request);
+public class Request {
+    RequestMap request;
+    public Request(RequestMap request){
+        this.request    =   request;
     }
     
     public String processRequest(){

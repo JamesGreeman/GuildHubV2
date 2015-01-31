@@ -4,9 +4,16 @@
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://46.249.223.10:3306/zanvorkc_guild_hub</property>
+    <!--  <property name="hibernate.connection.url">jdbc:mysql://46.249.223.10:3306/zanvorkc_guild_hub?zeroDateTimeBehavior=convertToNull</property>
     <property name="hibernate.connection.username">zanvorkc_user</property>
-    <property name="hibernate.connection.password">vQ.mT.dgvP6</property>
+    <property name="hibernate.connection.password">vQ.mT.dgvP6</property> -->
+    <property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/guild_hub?zeroDateTimeBehavior=convertToNull</property>
+    <property name="hibernate.connection.username">zanvork</property>
+    <property name="hibernate.connection.password">jdf7g4me</property>
     <property name="hibernate.connection.pool_size">3</property>
+    <property name="hibernate.show_sql">true</property>
+    <property name="hibernate.hbm2ddl.auto">validate</property>
+    <mapping class="com.zanvork.guildhub.model.Guild"/>
+    <mapping class="com.zanvork.guildhub.model.Character"/>
   </session-factory>
 </hibernate-configuration>

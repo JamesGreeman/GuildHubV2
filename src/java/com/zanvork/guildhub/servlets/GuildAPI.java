@@ -37,6 +37,8 @@ public class GuildAPI extends HttpServlet {
             RequestMap  requestMap  =   new RequestMap(request);
             String      json        =   new GuildRequest(requestMap).processRequest();
             out.println(json);
+        } catch (Exception e){
+            
         }
     }
 

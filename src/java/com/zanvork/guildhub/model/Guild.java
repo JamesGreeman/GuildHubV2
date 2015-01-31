@@ -6,15 +6,20 @@
 package com.zanvork.guildhub.model;
 
 import com.zanvork.guildhub.model.dao.HibernateMySQLDAO;
+
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 /**
@@ -24,18 +29,25 @@ import org.hibernate.criterion.Restrictions;
 @Entity
 @Table(name = "guilds")
 public class Guild {
+    //define the enum for faction
+    public  enum    Faction{horde, alliance;};
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int     guild_id;
-    private String  guild_name;
-    private int     realm_fk;
-    private int     guild_level;
-    //@Column(columnDefinition = "enum('horde','alliance')")
-    //@Enumerated(EnumType.STRING)
-    private String  faction;
-    private int     leader_fk;
+    private int             guild_id;
+    private String          guild_name;
+    private int             realm_fk;
+    private int             guild_level;
+    @Column(columnDefinition = "enum('horde','alliance')")
+    @Enumerated(EnumType.STRING)
+    private Faction         faction;
+    private int             leader_fk;
+    @Transient
+    private List<Character> members;
     
     
+    public Guild(){
+        
+    }
     //Getters and setters
     public int getGuild_id() {
         return guild_id;
@@ -69,14 +81,14 @@ public class Guild {
         this.guild_level = guild_level;
     }
 
-    public String getFaction() {
+    public Faction getFaction() {
         return faction;
     }
 
-    public void setFaction(String faction) {
+    public void setFaction(Faction faction) {
         this.faction = faction;
     }
-
+    
     public int getLeader_fk() {
         return leader_fk;
     }
@@ -84,14 +96,61 @@ public class Guild {
     public void setLeader_fk(int leader_fk) {
         this.leader_fk = leader_fk;
     }
+    
+    public List<Character>  getMembers(){
+        if (members == null || members.isEmpty()){
+            this.loadMembers();
+        }
+        return members;
+    }
+    
+    public List<Character>  getMembers(boolean forceReload){
+        if (forceReload || members == null || members.isEmpty()){
+            this.loadMembers();
+        }
+        return members;
+    }
+    
+    public String toJSON(){
+        String json =   "";
+        return json;
+    }
+    
+    public void loadMembers(){
+        members    =   Character.getAllCharacters(this);
+    }
 
-    public static List<Guild> getGuild(int guild_id){
-        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild");
+    public static Guild getGuild(int guild_id){
+        Guild   guild       =   null;
+        List<Guild> list;
+
+        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        List<Guild> list    =   session.createCriteria(Guild.class).list();
+
+        list = session.createCriteria(Guild.class)
+                .add(Restrictions.eq("guild_id", guild_id)).list();
         session.getTransaction().commit();
         session.close();
+        if (!list.isEmpty()){
+            guild =   list.get(0);
+        }
+        return guild;
+    }
+    
+    public static List<Guild> getAllGuilds(){
+         List<Guild> list;
+
+        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        list = session.createCriteria(Guild.class).list();
+        session.getTransaction().commit();
+        session.close();
+        
         return list;
     }
+    
+    
 }

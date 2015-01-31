@@ -5,6 +5,7 @@
  */
 package com.zanvork.guildhub.controller;
 import com.zanvork.guildhub.model.Guild;
+import com.zanvork.guildhub.model.Character;
 import com.zanvork.utils.RequestMap;
 import java.util.List;
 /**
@@ -18,8 +19,9 @@ public class GuildRequest extends Request{
     }
     @Override
     public String processRequest(){
-        List<Guild> guilds;
-        guilds = Guild.getGuild(1);
+        Guild guild;
+        guild   =   Guild.getGuild(1);
+        List<Character> members =   guild.getMembers();
         return "";
     }
 }

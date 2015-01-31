@@ -15,5 +15,10 @@
     <property name="hibernate.hbm2ddl.auto">validate</property>
     <mapping class="com.zanvork.guildhub.model.Guild"/>
     <mapping class="com.zanvork.guildhub.model.Character"/>
+    <mapping class="com.zanvork.guildhub.model.Race"/>
+    <mapping class="com.zanvork.guildhub.model.RaidTeam"/>
+    <mapping class="com.zanvork.guildhub.model.Realm"/>
+    <mapping class="com.zanvork.guildhub.model.Class"/>
+    <mapping class="com.zanvork.guildhub.model.Spec"/>
   </session-factory>
 </hibernate-configuration>

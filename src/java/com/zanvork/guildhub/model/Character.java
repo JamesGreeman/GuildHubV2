@@ -144,7 +144,7 @@ public class Character {
     }
     
     public static List<Character> getAllCharacters(){
-         List<Character> list;
+        List<Character> list;
 
         SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
         Session session = sessionFactory.openSession();
@@ -158,7 +158,7 @@ public class Character {
     }
     
     public static List<Character> getAllCharacters(Guild guild){
-         List<Character> list;
+        List<Character> list;
 
         SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
         Session session = sessionFactory.openSession();

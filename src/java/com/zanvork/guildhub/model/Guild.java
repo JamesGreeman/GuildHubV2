@@ -139,7 +139,7 @@ public class Guild {
     }
     
     public static List<Guild> getAllGuilds(){
-         List<Guild> list;
+        List<Guild> list;
 
         SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
         Session session = sessionFactory.openSession();

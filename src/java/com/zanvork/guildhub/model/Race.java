@@ -26,12 +26,12 @@ import org.hibernate.criterion.Restrictions;
 @Entity
 @Table(name = "races")
 public class Race {
-    public enum    Faction{horde, alliance;};
+    public enum    Faction{Horde, Alliance, Neutral;};
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int     race_id; 
     private String  name;
-    @Column(columnDefinition = "enum('horde','alliance')")
+    @Column(columnDefinition = "enum('Horde','Alliance','Neutral')")
     @Enumerated(EnumType.STRING)
     private Faction faction;
 
@@ -63,5 +63,19 @@ public class Race {
             race    =   list.get(0);
         }
         return race;
+    }
+    
+     public static List<Race> getAllRaces(){
+        List<Race> list;
+
+        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        list = session.createCriteria(Race.class).list();
+        session.getTransaction().commit();
+        session.close();
+        
+        return list;
     }
 }

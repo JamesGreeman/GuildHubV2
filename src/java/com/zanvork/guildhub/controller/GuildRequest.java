@@ -21,7 +21,7 @@ public class GuildRequest extends Request{
     public String processRequest(){
         Guild guild;
         guild   =   Guild.getGuild(1);
-        List<Character> members =   guild.getMembers();
+        guild.loadMembers();
         return "";
     }
 }

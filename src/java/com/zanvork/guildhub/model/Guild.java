@@ -15,11 +15,15 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.criterion.Restrictions;
 
 /**
@@ -30,20 +34,24 @@ import org.hibernate.criterion.Restrictions;
 @Table(name = "guilds")
 public class Guild {
     //define the enum for faction
-    public  enum    Faction{horde, alliance;};
+    public  enum    Faction{Horde, Alliance, Neutral;};
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int             guild_id;
     private String          guild_name;
     private int             realm_fk;
     private int             guild_level;
-    @Column(columnDefinition = "enum('horde','alliance')")
+    @Column(columnDefinition = "enum('Horde','Alliance','Neutral')")
     @Enumerated(EnumType.STRING)
     private Faction         faction;
     private int             leader_fk;
+    @ManyToOne()
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name="realm_fk", nullable=true, insertable=false, updatable=false)
+    private Realm           guildRealm;
     @Transient
     private List<Character> members;
-    
+
     
     public Guild(){
         

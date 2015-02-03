@@ -14,9 +14,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.criterion.Restrictions;
 
 /**
@@ -26,14 +30,14 @@ import org.hibernate.criterion.Restrictions;
 @Entity
 @Table(name = "characters")
 public class Character {
-    public enum    Faction{horde, alliance;};
+    public enum    Faction{Horde, Alliance, Neutral;};
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int     character_id; 
     private String  character_name;
     private int     realm_fk;
     private int     race_fk;    
-    @Column(columnDefinition = "enum('horde','alliance')")
+    @Column(columnDefinition = "enum('Horde','Alliance','Neutral')")
     @Enumerated(EnumType.STRING)
     private Faction faction;
     private int     class_fk;
@@ -43,7 +47,29 @@ public class Character {
     private int     guild_fk;
     private String  thumbnail_url;
     private int     user_fk;
-
+    
+    @ManyToOne()
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name="realm_fk", nullable=true, insertable=false, updatable=false)
+    private Realm   characterRealm;
+    @ManyToOne()
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name="race_fk", nullable=true, insertable=false, updatable=false)
+    private Race    characterRace;
+    @ManyToOne()
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name="class_fk", nullable=true, insertable=false, updatable=false)
+    private Class   characterClass;
+    @ManyToOne()
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name="spec_fk", nullable=true, insertable=false, updatable=false)
+    private Spec    characterMainSpec;
+   @ManyToOne()
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name="offspec_fk", nullable=true, insertable=false, updatable=false)
+    private Spec    characterOffSpec;
+    
+    
     public Character() {
     }
 
@@ -159,13 +185,13 @@ public class Character {
     
     public static List<Character> getAllCharacters(Guild guild){
         List<Character> list;
-
+        int guild_id    =   guild.getGuild_id();
         SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
         list = session.createCriteria(Character.class)
-                .add(Restrictions.eq("guild_fk", guild.getGuild_id())).list();
+                .add(Restrictions.eq("guild_fk", guild_id)).list();
         session.getTransaction().commit();
         session.close();
         

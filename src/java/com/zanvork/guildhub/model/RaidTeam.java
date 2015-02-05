@@ -7,14 +7,21 @@ package com.zanvork.guildhub.model;
 
 import com.zanvork.guildhub.model.dao.HibernateMySQLDAO;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -36,6 +43,16 @@ public class RaidTeam {
     @Enumerated(EnumType.STRING)
     private Region  region;
     private int     guild_fk;
+    
+    
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name="raid_team_members",
+            joinColumns = @JoinColumn( name="raid_team_fk"),
+            inverseJoinColumns = @JoinColumn( name="character_fk")
+    )
+    private List<Character> members;
+    
 
     public int getRaid_team_id() {
         return raid_team_id;
@@ -77,18 +94,22 @@ public class RaidTeam {
         this.guild_fk = guild_fk;
     }
     
-    public static List<RaidTeam> getAllRaidTeams(){
-        List<RaidTeam> list;
-
+    public static RaidTeam getRaidTeam(int raid_team_id){
+        List<RaidTeam>  list;
+        RaidTeam        team    =   null;
         SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        list = session.createCriteria(RaidTeam.class).list();
+        Criteria criteria = session.createCriteria(RaidTeam.class);
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        list = criteria.add(Restrictions.eq("raid_team_id", raid_team_id)).list();
         session.getTransaction().commit();
         session.close();
-        
-        return list;
+        if (!list.isEmpty()){
+            team    =   list.get(0);
+        }
+        return team;
     }
     
 

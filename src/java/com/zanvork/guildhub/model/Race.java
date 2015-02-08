@@ -51,14 +51,14 @@ public class Race {
         Race race   =   null;
         List<Race> list;
 
-        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
+        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
         list = session.createCriteria(Race.class)
                 .add(Restrictions.eq("race_id", race_id)).list();
         session.getTransaction().commit();
-        session.close();
+       
         if (!list.isEmpty()){
             race    =   list.get(0);
         }
@@ -68,13 +68,13 @@ public class Race {
      public static List<Race> getAllRaces(){
         List<Race> list;
 
-        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
+        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
         list = session.createCriteria(Race.class).list();
         session.getTransaction().commit();
-        session.close();
+        
         
         return list;
     }

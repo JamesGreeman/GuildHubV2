@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -61,14 +62,34 @@ public class Realm {
         Realm realm   =   null;
         List<Realm> list;
 
-        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
+        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
         list = session.createCriteria(Realm.class)
                 .add(Restrictions.eq("realm_id", realm_id)).list();
         session.getTransaction().commit();
-        session.close();
+        
+        if (!list.isEmpty()){
+            realm    =   list.get(0);
+        }
+        return realm;
+    }
+    
+    public static Realm getRealm(String realmName, String region){
+        Realm realm   =   null;
+        List<Realm> list;
+
+        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory();
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        list    =   session.createCriteria(Realm.class)
+                .add(Restrictions.eq("region", region))
+                .add(Restrictions.or(Restrictions.eq("slug", realmName), Restrictions.eq("realm_name", realmName)))
+                .list();
+        session.getTransaction().commit();
+        
         if (!list.isEmpty()){
             realm    =   list.get(0);
         }

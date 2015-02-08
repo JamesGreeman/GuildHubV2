@@ -97,7 +97,7 @@ public class RaidTeam {
     public static RaidTeam getRaidTeam(int raid_team_id){
         List<RaidTeam>  list;
         RaidTeam        team    =   null;
-        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
+        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
@@ -105,7 +105,7 @@ public class RaidTeam {
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         list = criteria.add(Restrictions.eq("raid_team_id", raid_team_id)).list();
         session.getTransaction().commit();
-        session.close();
+        
         if (!list.isEmpty()){
             team    =   list.get(0);
         }

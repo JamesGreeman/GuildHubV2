@@ -132,14 +132,14 @@ public class Guild {
         Guild   guild       =   null;
         List<Guild> list;
 
-        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
+        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
         list = session.createCriteria(Guild.class)
                 .add(Restrictions.eq("guild_id", guild_id)).list();
         session.getTransaction().commit();
-        session.close();
+        
         if (!list.isEmpty()){
             guild =   list.get(0);
         }
@@ -149,13 +149,12 @@ public class Guild {
     public static List<Guild> getAllGuilds(){
         List<Guild> list;
 
-        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
+        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
         list = session.createCriteria(Guild.class).list();
         session.getTransaction().commit();
-        session.close();
         
         return list;
     }

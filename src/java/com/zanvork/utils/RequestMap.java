@@ -5,7 +5,9 @@
  */
 package com.zanvork.utils;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -14,10 +16,19 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class RequestMap {
     
-    private Map<String, String[]>   requestParams;
+    private Map<String, String>   requestParams;
     
     public RequestMap(HttpServletRequest request){
-        requestParams   =   request.getParameterMap();
+        requestParams   =   mapParameters(request);
+    }
+    
+    private Map<String, String> mapParameters(HttpServletRequest request){
+        HashMap<String, String> mappedParams    =   new HashMap<>();
+        Map<String, String[]>   getParams       =   request.getParameterMap();
+        for (Entry<String, String[]> entry : getParams.entrySet()){
+            mappedParams.put(entry.getKey(), entry.getValue()[0]);
+        }
+        return mappedParams;
     }
     
     public boolean paramExists(String paramName){
@@ -31,8 +42,7 @@ public class RequestMap {
     public String getParam(String paramName){
         String  parameter   =   "";
         if (requestParams.containsKey(paramName)){
-            String[] params =   requestParams.get(paramName);
-            parameter   =   params[0];
+            parameter    =   requestParams.get(paramName);
         } 
         return  parameter;
     }
@@ -56,11 +66,12 @@ public class RequestMap {
     }
     
     public String getParam(String param, int type){
+        String  parameter = "";
         if (requestParams.containsKey(param)){
-            String[] params =   requestParams.get(param);
-            return  params[0];
+            parameter =   requestParams.get(param);
+            return  parameter;
         }
-        return  "";            
+        return  parameter;            
     }
     
     

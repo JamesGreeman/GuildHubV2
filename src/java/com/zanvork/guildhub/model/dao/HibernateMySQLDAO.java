@@ -18,8 +18,13 @@ import org.hibernate.service.ServiceRegistry;
  * @author Jamie
  */
 public class HibernateMySQLDAO {
+    public static final String DEFAULT_SESSION_NAME = "guild_hub";
     private static final Map<String, SessionFactory> sessionFactory = new HashMap();
 
+    public static SessionFactory getSessionFactory() {
+        return getSessionFactory(DEFAULT_SESSION_NAME);
+    }
+    
     public static SessionFactory getSessionFactory(String dbconnect) {
 
         if (sessionFactory != null && sessionFactory.containsKey(dbconnect)) {
@@ -38,5 +43,23 @@ public class HibernateMySQLDAO {
             throw new ExceptionInInitializerError(ex);
         }
         return sessionFactory.get(dbconnect);
+    }
+    
+    public static void closeSession(){
+        closeSession(DEFAULT_SESSION_NAME);
+    }
+    
+    public static void closeSession(String dbconnect){
+        if (sessionFactory != null && sessionFactory.containsKey(dbconnect)) {
+            SessionFactory sf   =   sessionFactory.get(dbconnect);
+            sf.close();
+            sessionFactory.remove(dbconnect);
+        
+            try {
+
+            }  catch (HibernateException ex) {
+               throw new ExceptionInInitializerError(ex);
+           }
+         }
     }
 }

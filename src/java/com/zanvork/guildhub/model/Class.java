@@ -59,14 +59,14 @@ public class Class {
         Class  characterClass  =   null;
         List<Class>    list;
 
-        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
+        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
         list = session.createCriteria(Class.class)
                 .add(Restrictions.eq("class_id", class_id)).list();
         session.getTransaction().commit();
-        session.close();
+        
         if (!list.isEmpty()){
             characterClass  =   list.get(0);
         }

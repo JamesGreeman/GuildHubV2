@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package com.zanvork.guildhub.controller;
+import com.google.gson.JsonObject;
+import com.zanvork.guildhub.model.dao.HibernateMySQLDAO;
 import com.zanvork.utils.RequestMap;
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.List;
  *
  * @author Jamie
  */
-public class Request {
+public abstract class Request {
     public static final String PARAM_REQUEST_TYPE       =   "requestType";
     public static final String PARAM_REQUEST_OBJECTS    =   "requestObjects";
     
@@ -21,9 +23,9 @@ public class Request {
     public static final String  REQUEST_TYPE_DELETE     =   "delete";
     
     
-    RequestMap      request;
-    String          requestType;
-    List<String>    requestObjects;
+    protected   RequestMap      request;
+    protected   String          requestType;
+    protected   List<String>    requestObjects;
     
     public Request(RequestMap request){
         this.request    =   request;
@@ -37,6 +39,37 @@ public class Request {
     }
     
     public String processRequest(){
-        return "";
+        String response =   "";
+        switch (requestType){
+            case REQUEST_TYPE_CREATE:
+                response    =   processCreateReuest();
+                break;
+            case REQUEST_TYPE_READ:
+                response    =   processReadRequest();
+                break;
+            case REQUEST_TYPE_UPDATE:
+                response    =   processUpdateRequest();
+                break;
+            case REQUEST_TYPE_DELETE:
+                response    =   processDeleteRequest();
+                break;
+            default:
+                response    =   this.defaultResposne("No request type specified");
+                break;
+        }
+        HibernateMySQLDAO.closeSession();
+        return response;
     }
+    
+    public String defaultResposne(String reason){
+        JsonObject response =   new JsonObject();
+        response.addProperty("response", "nodata");
+        response.addProperty("reason", reason);
+        return response.toString();
+    }
+    
+    public abstract String processCreateReuest();
+    public abstract String processReadRequest();
+    public abstract String processUpdateRequest();
+    public abstract String processDeleteRequest();
 }

@@ -7,6 +7,7 @@ package com.zanvork.guildhub.controller;
 import com.google.gson.Gson;
 import com.zanvork.guildhub.model.Guild;
 import com.zanvork.guildhub.model.Character;
+import com.zanvork.guildhub.model.RaidTeam;
 import com.zanvork.utils.RequestMap;
 import java.util.List;
 /**
@@ -29,24 +30,39 @@ public class GuildRequest extends Request{
 
         gson    =   new Gson();
     }
-    @Override
-    public String processRequest(){
-        String json =   "";
-        
-        if (this.requestType.equals(REQUEST_TYPE_READ)){                         //GetRequest
-            
-            if  (this.objectRequested(REQUEST_OBJECT_GUILD)){                   //request for a guild object
-               
-                if (this.objectRequested(REQUEST_OBJECT_MEMBERS)){              //also want members
-                    guild.loadMembers();
-                }
-                json    =   gson.toJson(guild);
     
-            } else if (this.objectRequested(REQUEST_OBJECT_MEMBERS)){           //request for the guild's members
-                json    =   gson.toJson(guild.getMembers());
-            }
-        }
-        return json;
+    @Override
+    public String processCreateReuest() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public String processReadRequest() {
+        String response =   "";
+         if  (this.objectRequested(REQUEST_OBJECT_GUILD)){                      //request for a guild object
+            if (this.objectRequested(REQUEST_OBJECT_MEMBERS)){                  //also want members
+                guild.loadMembers();
+            }
+            response    =   gson.toJson(guild);
+
+        } else if (this.objectRequested(REQUEST_OBJECT_MEMBERS)){               //request for the guild's members
+            response    =   gson.toJson(guild.getMembers());
+        } else {
+            response    =   this.defaultResposne("no object to load specified");
+        }
+         return response;
+    }
+
+    @Override
+    public String processUpdateRequest() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String processDeleteRequest() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
     
 }

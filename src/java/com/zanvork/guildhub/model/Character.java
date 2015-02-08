@@ -7,6 +7,7 @@ package com.zanvork.guildhub.model;
 
 import com.zanvork.guildhub.model.dao.HibernateMySQLDAO;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -70,7 +71,13 @@ public class Character {
     private Spec    characterOffSpec;
     
     
-    public Character() {
+    public Character(Map<String, String> characterData){
+        if (characterData.containsKey("name") && characterData.containsKey("realm")){
+            String characterName    =   characterData.get("name");
+            String realm            =   characterData.get("realm");
+            
+            
+        }
     }
 
     public int getCharacter_id() {
@@ -172,13 +179,12 @@ public class Character {
     public static List<Character> getAllCharacters(){
         List<Character> list;
 
-        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
+        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
         list = session.createCriteria(Character.class).list();
         session.getTransaction().commit();
-        session.close();
         
         return list;
     }
@@ -186,14 +192,13 @@ public class Character {
     public static List<Character> getAllCharacters(Guild guild){
         List<Character> list;
         int guild_id    =   guild.getGuild_id();
-        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory("guild_hub");
+        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
         list = session.createCriteria(Character.class)
                 .add(Restrictions.eq("guild_fk", guild_id)).list();
         session.getTransaction().commit();
-        session.close();
         
         return list;
     }

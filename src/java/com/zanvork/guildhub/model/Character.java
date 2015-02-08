@@ -5,7 +5,10 @@
  */
 package com.zanvork.guildhub.model;
 
+import com.google.gson.Gson;
 import com.zanvork.guildhub.model.dao.HibernateMySQLDAO;
+import com.zanvork.utils.BattleNetDataRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Column;
@@ -72,10 +75,18 @@ public class Character {
     
     
     public Character(Map<String, String> characterData){
-        if (characterData.containsKey("name") && characterData.containsKey("realm")){
+        if (characterData.containsKey("name") && characterData.containsKey("realm") && characterData.containsKey("region")){
             String characterName    =   characterData.get("name");
             String realm            =   characterData.get("realm");
+            String region           =   characterData.get("region");
             
+            BattleNetDataRequest    bnetRequest =   new BattleNetDataRequest();
+            String bnetResponse                 =   bnetRequest.loadCharacter(characterName, realm, region);
+            
+            //TODO deserialise the response
+  /*          Gson gson               =   new Gson();
+            ArrayList   response    =   new ArrayList();
+            response                =   gson.fromJson(bnetResponse, ArrayList.class);*/
             
         }
     }

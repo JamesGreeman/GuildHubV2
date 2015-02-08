@@ -5,6 +5,7 @@
  */
 package com.zanvork.utils;
 
+import com.google.gson.JsonObject;
 import com.zanvork.guildhub.model.Realm;
 
 /**
@@ -15,27 +16,31 @@ public class BattleNetDataRequest extends HTTPDataRequest {
     public static final String EU_BASE_URL  =   "http://eu.battle.net/api/wow/";
     public static final String US_BASE_URL  =   "http://eu.battle.net/api/wow/";
     
-    public static String loadCharacter(String name, String realmName, String region){
+    public BattleNetDataRequest(){
+        
+    }
+    
+    public String loadCharacter(String name, String realmName, String region){
         String response =   "";
         
         Realm   realm;
         realm   =   Realm.getRealm(realmName, region);
         if (realm != null){
             StringBuilder   url =   new StringBuilder()
-                    .append(BattleNetDataRequest.getBaseURL(region))
+                    .append(getBaseURL(region))
                     .append("character/")
                     .append(realm.getSlug())
                     .append("/")
                     .append(name);
   
-            response    =   BattleNetDataRequest.makeRequest(url.toString());
+            response    =   makeRequest(url.toString());
         }
         
        
         return response;
     }
     
-    private static String getBaseURL(String region){
+    private String getBaseURL(String region){
         if (region.equals("EU")){
             return EU_BASE_URL;
         } else if (region.equals("US")){
@@ -44,5 +49,6 @@ public class BattleNetDataRequest extends HTTPDataRequest {
             return "";
         }
     }
+
     
 }

@@ -76,14 +76,15 @@ public class Realm {
         return realm;
     }
     
-    public static Realm getRealm(String realmName, String region){
+    public static Realm getRealm(String realmName, String regionName){
         Realm realm   =   null;
         List<Realm> list;
-
+        Region region   =   Region.valueOf(regionName);
+        
         SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-
+        
         list    =   session.createCriteria(Realm.class)
                 .add(Restrictions.eq("region", region))
                 .add(Restrictions.or(Restrictions.eq("slug", realmName), Restrictions.eq("realm_name", realmName)))
@@ -95,4 +96,5 @@ public class Realm {
         }
         return realm;
     }
+   
 }

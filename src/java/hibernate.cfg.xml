@@ -13,6 +13,8 @@
     <property name="hibernate.connection.pool_size">3</property>
     <property name="hibernate.show_sql">true</property>
     <property name="hibernate.hbm2ddl.auto">validate</property>
+    <property name="hibernate.format_sql">true</property>
+    <property name="hibernate.use_sql_comments">true</property>
     <mapping class="com.zanvork.guildhub.model.Guild"/>
     <mapping class="com.zanvork.guildhub.model.Character"/>
     <mapping class="com.zanvork.guildhub.model.Race"/>

@@ -26,7 +26,6 @@ import org.hibernate.criterion.Restrictions;
 @Entity
 @Table(name = "races")
 public class Race {
-    public enum    Faction{Horde, Alliance, Neutral;};
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int     race_id; 

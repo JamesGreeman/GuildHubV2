@@ -33,8 +33,6 @@ import org.hibernate.criterion.Restrictions;
 @Entity
 @Table(name = "guilds")
 public class Guild {
-    //define the enum for faction
-    public  enum    Faction{Horde, Alliance, Neutral;};
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int             guild_id;

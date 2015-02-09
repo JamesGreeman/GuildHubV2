@@ -6,6 +6,9 @@
 package com.zanvork.guildhub.model;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.zanvork.guildhub.model.dao.HibernateMySQLDAO;
 import com.zanvork.utils.BattleNetDataRequest;
 import java.util.ArrayList;
@@ -34,7 +37,6 @@ import org.hibernate.criterion.Restrictions;
 @Entity
 @Table(name = "characters")
 public class Character {
-    public enum    Faction{Horde, Alliance, Neutral;};
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int     character_id; 
@@ -76,18 +78,60 @@ public class Character {
     
     public Character(Map<String, String> characterData){
         if (characterData.containsKey("name") && characterData.containsKey("realm") && characterData.containsKey("region")){
-            String characterName    =   characterData.get("name");
-            String realm            =   characterData.get("realm");
-            String region           =   characterData.get("region");
+            this.character_name     =   characterData.get("name");
+            String  realmName       =   characterData.get("realm");
+            String  region          =   characterData.get("region");
+            this.characterRealm     =   Realm.getRealm(realmName, region);
+            
+            String  fields          =   "";
+            if (characterData.containsKey("fields"      )){
+                fields  =   characterData.get("fields");
+            }
             
             BattleNetDataRequest    bnetRequest =   new BattleNetDataRequest();
-            String bnetResponse                 =   bnetRequest.loadCharacter(characterName, realm, region);
+            String bnetResponse                 =   bnetRequest.loadCharacter(character_name, characterRealm, fields);
             
-            //TODO deserialise the response
-  /*          Gson gson               =   new Gson();
-            ArrayList   response    =   new ArrayList();
-            response                =   gson.fromJson(bnetResponse, ArrayList.class);*/
+            JsonParser  parser  =   new JsonParser();
+            JsonObject  bnetJson    =   parser.parse(bnetResponse).getAsJsonObject();
             
+            this.character_name =   bnetJson.get("name").getAsString();
+            this.realm_fk       =   characterRealm.getRealm_id();
+            this.race_fk        =   bnetJson.get("race").getAsInt();
+
+            this.characterRace  =   Race.getRace(race_fk);
+            this.faction        =   characterRace.getFaction();
+            
+            this.class_fk       =   bnetJson.get("class").getAsInt();
+            this.characterClass =   Class.getClass(class_fk);
+            
+            //spec stuff
+            this.spec_fk        =   -1;
+            this.offspec_fk     =   -1;
+            if (bnetJson.has("talents")){
+                JsonArray   jsonTalents     =   bnetJson.getAsJsonArray("talents");
+                JsonObject  jsonMainSpec    =   jsonTalents.get(0).getAsJsonObject();
+                String      mainSpecName    =   "";
+                JsonObject  jsonOffSpec     =   null;
+                String      offSpecName     =   "";
+                if (jsonTalents.size() > 1){
+                    jsonOffSpec =   jsonTalents.get(1).getAsJsonObject();
+                }
+                
+                if (jsonMainSpec.has("spec") && jsonMainSpec.getAsJsonObject("spec").has("name")){
+                    mainSpecName            =   jsonMainSpec.getAsJsonObject("spec").get("name").getAsString();
+                    this.characterMainSpec  =   Spec.getSpec(class_fk, mainSpecName);
+                    this.spec_fk            =   characterMainSpec.getSpec_id();
+                }
+                if (jsonOffSpec != null && jsonOffSpec.has("spec") && jsonOffSpec.getAsJsonObject("spec").has("name")){
+                    offSpecName             =   jsonOffSpec.getAsJsonObject("spec").get("name").getAsString();
+                    this.characterOffSpec   =   Spec.getSpec(class_fk, offSpecName);
+                    this.offspec_fk         =   characterOffSpec.getSpec_id();
+                }
+            }
+            //TODO: set guild
+            this.level          =   bnetJson.get("level").getAsInt();
+            this.thumbnail_url  =   bnetJson.get("thumbnail").getAsString();
+            this.user_fk        =   -1;
         }
     }
 

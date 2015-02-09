@@ -20,18 +20,17 @@ public class BattleNetDataRequest extends HTTPDataRequest {
         
     }
     
-    public String loadCharacter(String name, String realmName, String region){
+    public String loadCharacter(String name, Realm realm, String fields){
         String response =   "";
-        
-        Realm   realm;
-        realm   =   Realm.getRealm(realmName, region);
         if (realm != null){
             StringBuilder   url =   new StringBuilder()
-                    .append(getBaseURL(region))
+                    .append(getBaseURL(realm.getRegionString()))
                     .append("character/")
                     .append(realm.getSlug())
                     .append("/")
-                    .append(name);
+                    .append(name)
+                    .append("?fields=")
+                    .append(fields);
   
             response    =   makeRequest(url.toString());
         }

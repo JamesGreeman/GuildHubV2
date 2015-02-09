@@ -58,6 +58,10 @@ public class Realm {
         return region;
     }
     
+    public String getRegionString(){
+        return region.toString();
+    }
+    
     public static Realm getRealm(int realm_id){
         Realm realm   =   null;
         List<Realm> list;

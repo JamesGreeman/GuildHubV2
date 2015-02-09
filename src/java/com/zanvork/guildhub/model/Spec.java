@@ -5,6 +5,8 @@
  */
 package com.zanvork.guildhub.model;
 
+import com.zanvork.guildhub.model.dao.HibernateMySQLDAO;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,6 +15,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -56,5 +61,24 @@ public class Spec {
         return main_stat;
     }
     
-    
+    public static Spec getSpec(int classId, String specName){
+        Spec spec   =   null;
+        List<Spec> list;
+
+        SessionFactory sessionFactory = HibernateMySQLDAO.getSessionFactory();
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        list = session.createCriteria(Spec.class)
+                .add(Restrictions.eq("class_fk", classId))
+                .add(Restrictions.eq("spec_name", specName))
+                .list();
+        session.getTransaction().commit();
+       
+        if (!list.isEmpty()){
+            spec    =   list.get(0);
+        }
+        return spec;
+    }
+
 }
